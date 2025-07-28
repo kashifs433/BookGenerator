@@ -1,0 +1,10 @@
+name: APIEnginesConfig
+description: This Config file contains the configuration detail used by the API Engines
+APIEngines:
+  BookGenAPIEngine:
+    PortNumber: 1111
+    NumberOfWorker: 4
+    Host: '0.0.0.0'
+  BookQ:
+    PortNumber: 1112
+    Host: '0.0.0.0'

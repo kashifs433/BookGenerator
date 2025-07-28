@@ -1,0 +1,8 @@
+name: LlamaModelConfig
+description: LlamaModel related information
+GPT4All:
+  ModelName: "Meta-Llama-3-8B-Instruct.Q8_0_2.gguf"
+  device: "cpu"
+  n_threads: 8
+  max_tokens: 4024
+  Prompt: "Make me a Book with Book type as {Book_Type} with {Book_Description}  chapters with description {Book_Chapter_count}. Make sure your output is only the JSON object, nothing else. For the output, fill the JSON exactly in this format:"
