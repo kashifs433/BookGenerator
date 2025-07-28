@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📘 BookGen Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+    margin: 0;
+    padding-bottom: 60px;
+  }
+
+  .header-bar {
+    background: #ffffffcc;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 18px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .header-bar h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-modern {
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    transition: all 0.25s ease;
+  }
+
+  .btn-refresh {
+    background: #c7d2fe;
+    color: #3730a3;
+  }
+
+  .btn-add {
+    background: #4f46e5;
+    color: white;
+  }
+
+  .btn-modern:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .book-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(6px);
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s ease;
+    cursor: pointer;
+  }
+
+  .book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .footer {
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    padding: 16px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -1px 10px rgba(0, 0, 0, 0.04);
+  }
+
+  .swal2-popup {
+    font-size: 16px !important;
+    width: 55% !important;
+    padding: 2em !important;
+    border-radius: 16px;
+  }
+
+  .swal2-input,
+  .swal2-textarea {
+    font-size: 15px;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    width: 100%;
+  }
+
+  .swal2-textarea {
+    height: 180px;
+    resize: vertical;
+  }
+
+  .chapter-card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    text-align: left;
+  }
+
+  .chapter-card h5 {
+    margin-bottom: 8px;
+    color: #374151;
+  }
+
+  .chapter-card p {
+    white-space: pre-wrap;
+    margin-bottom: 0;
+  }
+
+  .spinner-border {
+    display: none;
+  }
+</style>
+
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header-bar d-flex justify-content-between align-items-center">
+    <h1><i class="fa-solid fa-book-open-reader me-2"></i>BookGen Dashboard</h1>
+    <div class="button-group">
+      <button class="btn btn-modern btn-refresh" id="refreshBtn" onclick="refreshBooks()">
+        <i class="fa-solid fa-arrows-rotate"></i> Refresh
+      </button>
+      <button class="btn btn-modern btn-add" onclick="showAddBookForm()">
+        <i class="fa-solid fa-plus"></i> Add Book
+      </button>
+    </div>
+  </div>
+
+  <!-- Book List -->
+  <div class="container mt-4">
+    <div class="row g-4" id="book-list"></div>
+
+    <div class="text-center mt-5">
+      <div class="spinner-border text-primary" id="loadingSpinner" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    &copy; 2025 BookGen Software · Crafted with 💙 for readers
+  </div>
+
+  <!-- Scripts -->
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+
+<script>
+  AOS.init({ duration: 900, easing: 'ease-in-out', once: true });
+
+  const apiBase = "/api";
+
+  function refreshBooks() {
+    const btn = document.getElementById("refreshBtn");
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+    fetchBooks().then(() => {
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Refresh';
+      }, 1000);
+    });
+  }
+
+  async function fetchBooks() {
+    try {
+      document.getElementById("loadingSpinner").style.display = "block";
+      const res = await fetch(`${apiBase}/GetAllBook`);
+      const data = await res.json();
+
+      const container = document.getElementById("book-list");
+      container.innerHTML = "";
+
+      Object.entries(data).forEach(([id, book], index) => {
+        const div = document.createElement("div");
+        div.className = "col-md-4";
+        div.innerHTML = `
+          <div class="book-card" onclick="viewBook('${id}')" data-aos="fade-up" data-aos-delay="${index * 150}">
+            <h5 class="mb-1">${book.BookName || "Untitled Book"}</h5>
+            <small class="text-muted">Book ID: ${id}</small>
+            <p class="mt-2"><strong>Status:</strong> ${book.BookStatus}</p>
+            <p>${book.Book_Description?.slice(0, 80) || "No description"}...</p>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    } catch (err) {
+      console.error("❌ Error loading books:", err);
+    } finally {
+      document.getElementById("loadingSpinner").style.display = "none";
+    }
+  }
+
+  function showAddBookForm() {
+    Swal.fire({
+      title: "Add New Book",
+      html: `
+        <input type="text" id="book_type" class="swal2-input" placeholder="Book Type" />
+        <textarea id="book_description" class="swal2-textarea" placeholder="Book Description"></textarea>
+        <div class="text-muted mt-2" style="font-size: 13px;">⚠️ Generating a book may take up to 3 minutes.</div>
+      `,
+      confirmButtonText: "Generate",
+      showCancelButton: true,
+      cancelButtonText: "Cancel",
+      focusConfirm: false,
+      preConfirm: () => {
+        const type = document.getElementById("book_type").value.trim();
+        const desc = document.getElementById("book_description").value.trim();
+        if (!type || !desc) {
+          Swal.showValidationMessage("Both fields are required");
+          return false;
+        }
+        return {
+          Book_Type: type,
+          Book_Description: desc
+        };
+      }
+    }).then(result => {
+      if (result.isConfirmed) addBook(result.value);
+    });
+  }
+
+  async function addBook(bookData) {
+    try {
+      Swal.fire({
+        title: "Generating Book...",
+        text: "This may take up to 2 minutes.",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      const res = await fetch(`${apiBase}/BookGenerate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookData)
+      });
+
+      const result = await res.json();
+      Swal.fire("✅ Success", `Book ID: ${result.BookID}`, "success");
+      fetchBooks();
+    } catch (err) {
+      console.error("Error:", err);
+      Swal.fire("❌ Failed", "Could not create book.", "error");
+    }
+  }
+
+  async function viewBook(bookId) {
+    // Show quick loading modal immediately
+    Swal.fire({
+      title: "📖 Opening Book...",
+      text: "Please wait a moment...",
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const res = await fetch(`${apiBase}/GetBookIDDetails?BookID=${bookId}`);
+      const book = await res.json();
+
+      const chapterHtml = book.Chapters && book.Chapters.length
+        ? book.Chapters.map((ch, i) => `
+            <div class="chapter-card" data-aos="fade-up" data-aos-delay="${i * 100}">
+              <h5>📘 Chapter ${ch.Chapter_Number || i + 1}: ${ch.Chapter_Title || "Untitled"}</h5>
+              <p>${ch.Chapter_Content || "No content."}</p>
+            </div>
+          `).join("")
+        : "<p>No chapters found.</p>";
+
+      Swal.fire({
+        title: book.BookName || "Book Details",
+        html: `
+          <p><strong>Type:</strong> ${book.Book_Type}</p>
+          <p><strong>Description:</strong> ${book.Book_Description}</p>
+          <hr>
+          <div style="max-height: 60vh; overflow-y: auto;">${chapterHtml}</div>
+        `,
+        width: "80%",
+        showConfirmButton: true
+      });
+    } catch (err) {
+      console.error("❌ Failed to fetch book:", err);
+      Swal.fire("Error", "Could not fetch book details.", "error");
+    }
+  }
+
+  // Pre-warm SweetAlert2 on DOM load to reduce first-load lag
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      Swal.fire({
+        title: "Loading...",
+        showConfirmButton: false,
+        timer: 1
+      });
+    }, 300);
+  });
+
+  setTimeout(fetchBooks, 500); // Slight delay for smoother initial load
+  setInterval(fetchBooks, 30000); // Auto refresh every 30s
+</script>
+
+
+</body>
+</html>
