@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+requests
+pyyaml
+gpt4all
