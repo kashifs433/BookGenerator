@@ -1,6 +1,7 @@
 # BookGenerator
 BookGen is a full-stack, LLM-powered Book Generator software designed to create entire books with custom types and descriptions using natural language prompts. Built for automation, creativity, and fast prototyping, ideal for writers, educators, content creators, or AI experimenters.
 
+<img width="1891" height="1080" alt="BookGen App Design Flow" src="https://github.com/user-attachments/assets/91138fcb-0c16-4a3f-a5e6-4d2a28075611" />
 
 ## Getting Started
 > **Note: Skip to Step 6 if you only want to run the pre-built Docker image**
