@@ -18,7 +18,7 @@ Download or clone the repository and extract it to your desired location
 Download the model file and place it inside the `LlamaModels/` folder:
 
 **Model Link:**  
-`https://drive.google.com/file/d/17OTbNVDM2mDKkSYdQGy_9_Rg5j6S_vO2`
+```https://drive.google.com/file/d/17OTbNVDM2mDKkSYdQGy_9_Rg5j6S_vO2```
 
 **Optional:** You can configure the model settings in `LlamaModelConfig.yaml`
 
@@ -64,7 +64,7 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 
 Download the Docker image:
 
-`https://drive.google.com/file/d/1PA6tKDUTBh5LVZFR051Hz1uwB-ZT7SuX`
+```https://drive.google.com/file/d/1PA6tKDUTBh5LVZFR051Hz1uwB-ZT7SuX```
 
 Then run:
 
