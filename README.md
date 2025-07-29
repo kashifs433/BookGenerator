@@ -4,6 +4,7 @@ BookGen is a full-stack, LLM-powered Book Generator software designed to create 
 
 ## Getting Started
 Follow the steps below to set up the App:
+**Note: Skip all the steps till step 6 and start from `step 6` if prefer to only load docker image**
 
 ##
 #### 1. Project Setup
@@ -42,7 +43,7 @@ Run the following command to install all required dependencies:
 **Run the main.py to run the app**
 
 ##
-#### 5. Install and Run on Docker 
+#### 5. Install and Run on Docker
 Run the below commands to setup and run on docker 
 
 ```
@@ -55,7 +56,17 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 **Note: This applicaton can be accessed through page `http://localhost:1111/dashboard`**
 
 ##
-#### 6. Generating the Book Using UI
+#### 6. Load and Run Docker Image (Skip other steps)
+
+Download the docker image from `https://drive.google.com/file/d/1PA6tKDUTBh5LVZFR051Hz1uwB-ZT7SuX` and run below commands
+```
+cd PATH_TO_THE_DOCKER_IMAGE
+docker load -i bookgen-image.tar
+docker run -p 1111:1111 -p 1112:1112 bookgen-app
+```
+
+##
+#### 7. Generating the Book Using UI
 - Click on the Add Icon to generate the book using Llama model
 - Provide Book type (Horror, Science, etc) and description
 - Wait for the 3 mins (If no GPU present) for it to complete or read, add more book
