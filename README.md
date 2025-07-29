@@ -3,20 +3,24 @@ BookGen is a full-stack, LLM-powered Book Generator software designed to create 
 
 
 ## Getting Started
+> **Note: Skip to Step 6 if you only want to run the pre-built Docker image**
+
 Follow the steps below to set up the App:
-**Note: Skip all the steps till step 6 and start from `step 6` if prefer to only load docker image**
+
 
 ##
 #### 1. Project Setup
-download the repositrory and extract it in the desired location
+Download or clone the repository and extract it to your desired location
+
 
 ##
 #### 2. Model Setup
-Download the model from below link and place it in the Model folder
+Download the model file and place it inside the `LlamaModels/` folder:
 
+**Model Link:**  
 `https://drive.google.com/file/d/17OTbNVDM2mDKkSYdQGy_9_Rg5j6S_vO2`
 
-Set the Model Config if required using the below table: 
+**Optional:** You can configure the model settings in `LlamaModelConfig.yaml`
 
 | Parameters        | Detail                                            |
 | ----------------- | ------------------------------------------------- |    
@@ -26,16 +30,16 @@ Set the Model Config if required using the below table:
 | max_tokens        | Set it higher if you are generating long response |
 | Prompt            | Defalut system Prompt(Do not change it)           |
 
-`As of now, no need to change anything`
+> *Note: Default config works fine, no changes needed unless you're customizing.*
 
 ##
 #### 3. Host, Port and Threaad Configuration
-You can change the ports, Number of Threads and Host used by the app using the config `APIEnginesConfig.yaml`
+Configure the host, ports, and number of threads in the file: `APIEnginesConfig.yaml`
 
-**Note: `By default app will use port 1111 and 1112 with 4 threads`**
+- **Default setup:** `port 1111` and `1112` with `4 threads`
 
 ##
-#### 4. Install Dependencies (If not using Docker)
+#### 4. Install Dependencies (Skip if using Docker)
 Run the following command to install all required dependencies:
 
 `pip install -r requirements.txt`
@@ -43,7 +47,7 @@ Run the following command to install all required dependencies:
 **Run the main.py to run the app**
 
 ##
-#### 5. Install and Run on Docker
+#### 5. Build and Run Using Docker
 Run the below commands to setup and run on docker 
 
 ```
@@ -51,14 +55,19 @@ cd PATH_TO_THE_APP_DIR
 docker build -t bookgen-app .
 docker run -p 1111:1111 -p 1112:1112 bookgen-app
 ```
-**Scale the resources used by the docker if required**
+**You can increase CPU/RAM usage via Docker Desktop settings (recommended)**
 
-**Note: This applicaton can be accessed through page `http://localhost:1111/dashboard`**
+**Note: Access the app at: `http://localhost:1111/dashboard`**
 
 ##
-#### 6. Load and Run Docker Image (Skip other steps)
+#### 6. Load and Run Pre-built Docker Image (Skip steps 1–5)
 
-Download the docker image from `https://drive.google.com/file/d/1PA6tKDUTBh5LVZFR051Hz1uwB-ZT7SuX` and run below commands
+Download the Docker image:
+
+`https://drive.google.com/file/d/1PA6tKDUTBh5LVZFR051Hz1uwB-ZT7SuX`
+
+Then run:
+
 ```
 cd PATH_TO_THE_DOCKER_IMAGE
 docker load -i bookgen-image.tar
@@ -66,20 +75,20 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 ```
 
 ##
-#### 7. Generating the Book Using UI
+#### 7. Generate a Book via UI
 - Click on the Add Icon to generate the book using Llama model
 - Provide Book type (Horror, Science, etc) and description
-- Wait for the 3 mins (If no GPU present) for it to complete or read, add more book
-- once it is completed, status will change to complete and the you can view it
+- Wait for the 3 mins (If no GPU present) for it to complete
+- Once the status shows Complete, click to view the book and its chapters
 
 
-##
-##
-## Below are the available API:
+---
+
+## Below are the available APIs:
 
 
 
-#### 1. API Engine
+#### 1. BookGen Engine APIs
 
 
 | API                                | Status                      |
@@ -96,7 +105,7 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 "URL": "/api/BookGenerate",
 "Method": "POST",
 "Payload": "JSON with {'Book_Type' : 'your input', ''Book_Description} : 'your input'}",
-"Returns": "BookID with queue entry"
+"Returns": "BookID (added to queue)"
 ```
 
 ##
@@ -105,7 +114,7 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 "URL": "/api/GetBookIDDetails",
 "Method": "GET",
 "Params": "BookID",
-"Returns": "Specific Book Detail from the Queue"
+"Returns": "Book details and chapters"
 ```
 
 ##
@@ -113,7 +122,7 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 ```
 "URL": "/api/GetAllBook",
 "Method": "GET",
-"Returns": "Entire Queue"
+"Returns": "All generated books in queue"
 ```
 
 ##
@@ -121,12 +130,10 @@ docker run -p 1111:1111 -p 1112:1112 bookgen-app
 ```
 "URL": "/api/GetAllBook",
 "Method": "GET",
-"Returns": "Info about the available API"
+"Returns": "Info about available API routes"
 ```
 
-
-##
-##
+---
 
 #### 2. Queue
 
